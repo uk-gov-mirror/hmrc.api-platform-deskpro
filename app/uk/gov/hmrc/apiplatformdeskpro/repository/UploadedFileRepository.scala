@@ -51,7 +51,7 @@ class UploadedFileRepository @Inject() (mongo: MongoComponent, val clock: Clock)
           ascending("createdAt"),
           IndexOptions().name("createdAt_ttl_idx")
             .background(true)
-            .expireAfter(24, TimeUnit.HOURS)
+            .expireAfter(72, TimeUnit.HOURS)
         )
       ),
       replaceIndexes = true

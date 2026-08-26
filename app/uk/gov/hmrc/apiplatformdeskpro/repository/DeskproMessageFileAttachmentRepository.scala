@@ -58,7 +58,7 @@ class DeskproMessageFileAttachmentRepository @Inject() (mongo: MongoComponent, v
           ascending("createdAt"),
           IndexOptions().name("createdAt_ttl_idx")
             .background(true)
-            .expireAfter(24, TimeUnit.HOURS)
+            .expireAfter(72, TimeUnit.HOURS)
         )
       ),
       replaceIndexes = true
