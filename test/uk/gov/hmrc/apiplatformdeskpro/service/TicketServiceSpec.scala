@@ -46,38 +46,39 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
     val mockMessageFileAttachmentRepo = mock[DeskproMessageFileAttachmentRepository]
     val mockUploadedFileRepo          = mock[UploadedFileRepository]
 
-    val fullName        = "Bob Holness"
-    val email           = LaxEmailAddress("bob@example.com")
-    val subject         = "Subject of the ticket"
-    val message         = "This is where the message for the ticket goes"
-    val fileReference   = "fileRef"
-    val fileName        = "fileName.txt"
-    val fileReference2  = "43567345639245763490"
-    val fileName2       = "file-name2.pdf"
-    val fileAttachment  = FileAttachment(fileReference, fileName)
-    val apiName         = "apiName"
-    val applicationId   = ApplicationId.random.toString()
-    val organisation    = "organisation"
-    val supportReason   = "supportReason"
-    val reasonKey       = "reason-key"
-    val teamMemberEmail = "frank@example.com"
-    val service         = "third-party-developer"
-    val referrer        = "referrer"
-    val sessionId       = "569fkfie65w9efgsdjhgflsdfgsdlj"
-    val userAgent       = "Chrome"
-    val ref             = "ref"
-    val brand           = 1
-    val attachedFiles   = "<h4 class=\"govuk-heading-s govuk-!-margin-bottom-1\">Attached files</h4>"
-    val personId        = 34
-    val personEmail     = LaxEmailAddress("bob@example.com")
-    val status          = Some("resolved")
-    val ticketId: Int   = 123
-    val messageId: Int  = 789
-    val deskproTicket1  = DeskproTicketResponse(ticketId, "ref1", personId, "bob@example.com", "awaiting_user", instant, instant, Some(instant), "subject 1")
-    val deskproTicket2  = DeskproTicketResponse(456, "ref2", personId, "bob@example.com", "awaiting_agent", instant, instant, None, "subject 2")
-    val deskproMessage1 = DeskproMessageResponse(787, ticketId, personId, instant, 0, "message 1", List.empty)
-    val deskproMessage2 = DeskproMessageResponse(788, ticketId, personId, instant.minus(Duration.ofDays(2)), 0, "message 2", List.empty)
-    val deskproMessage3 = DeskproMessageResponse(789, ticketId, personId, instant.minus(Duration.ofDays(5)), 0, "message 3", List.empty)
+    val fullName                 = "Bob Holness"
+    val email                    = LaxEmailAddress("bob@example.com")
+    val subject                  = "Subject of the ticket"
+    val message                  = "This is where the message for the ticket goes"
+    val fileReference            = "fileRef"
+    val fileName                 = "fileName.txt"
+    val fileReference2           = "43567345639245763490"
+    val fileName2                = "file-name2.pdf"
+    val fileAttachment           = FileAttachment(fileReference, fileName)
+    val apiName                  = "apiName"
+    val applicationId            = ApplicationId.random.toString()
+    val organisation             = "organisation"
+    val supportReason            = "supportReason"
+    val reasonKey                = "reason-key"
+    val teamMemberEmail          = "frank@example.com"
+    val service                  = "third-party-developer"
+    val referrer                 = "referrer"
+    val sessionId                = "569fkfie65w9efgsdjhgflsdfgsdlj"
+    val userAgent                = "Chrome"
+    val organisationSubmissionId = "fcdcd535-31f7-4127-a1ce-9356e088f186"
+    val ref                      = "ref"
+    val brand                    = 1
+    val attachedFiles            = "<h4 class=\"govuk-heading-s govuk-!-margin-bottom-1\">Attached files</h4>"
+    val personId                 = 34
+    val personEmail              = LaxEmailAddress("bob@example.com")
+    val status                   = Some("resolved")
+    val ticketId: Int            = 123
+    val messageId: Int           = 789
+    val deskproTicket1           = DeskproTicketResponse(ticketId, "ref1", personId, "bob@example.com", "awaiting_user", instant, instant, Some(instant), "subject 1")
+    val deskproTicket2           = DeskproTicketResponse(456, "ref2", personId, "bob@example.com", "awaiting_agent", instant, instant, None, "subject 2")
+    val deskproMessage1          = DeskproMessageResponse(787, ticketId, personId, instant, 0, "message 1", List.empty)
+    val deskproMessage2          = DeskproMessageResponse(788, ticketId, personId, instant.minus(Duration.ofDays(2)), 0, "message 2", List.empty)
+    val deskproMessage3          = DeskproMessageResponse(789, ticketId, personId, instant.minus(Duration.ofDays(5)), 0, "message 3", List.empty)
 
     val deskproMessage4    = DeskproMessageResponse(
       369,
@@ -122,7 +123,8 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         Some(service),
         Some(referrer),
         Some(sessionId),
-        Some(userAgent)
+        Some(userAgent),
+        Some(organisationSubmissionId)
       )
 
       val fields                = Map(
@@ -134,7 +136,8 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         "13" -> referrer,
         "14" -> service,
         "15" -> sessionId,
-        "16" -> userAgent
+        "16" -> userAgent,
+        "17" -> organisationSubmissionId
       )
       val expectedPerson        = DeskproPerson(fullName, email.text)
       val expectedDeskproTicket = CreateDeskproTicket(expectedPerson, subject, DeskproTicketMessage(message, expectedPerson), brand, fields, List(teamMemberEmail))
@@ -162,6 +165,7 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
       when(mockAppConfig.deskproService).thenReturn("14")
       when(mockAppConfig.deskproSessionId).thenReturn("15")
       when(mockAppConfig.deskproUserAgent).thenReturn("16")
+      when(mockAppConfig.deskproOrganisationSubmissionId).thenReturn("17")
 
       val result = await(underTest.submitTicket(createTicketRequest))
 
@@ -176,6 +180,7 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         email.text,
         subject,
         message,
+        None,
         None,
         None,
         None,
@@ -235,6 +240,7 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         Some(referrer),
         Some(sessionId),
         Some(userAgent),
+        None,
         List(
           FileAttachment(fileReference, fileName),
           FileAttachment(fileReference2, fileName2)
@@ -314,6 +320,7 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         Some(referrer),
         Some(sessionId),
         Some(userAgent),
+        Some(organisationSubmissionId),
         List(
           FileAttachment(fileReference, fileName),
           FileAttachment(fileReference2, fileName2)
@@ -329,7 +336,8 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
         "13" -> referrer,
         "14" -> service,
         "15" -> sessionId,
-        "16" -> userAgent
+        "16" -> userAgent,
+        "17" -> organisationSubmissionId
       )
       val expectedPerson        = DeskproPerson(fullName, email.text)
       val expectedMessage       =
@@ -362,6 +370,7 @@ class TicketServiceSpec extends AsyncHmrcSpec with FixedClock {
       when(mockAppConfig.deskproService).thenReturn("14")
       when(mockAppConfig.deskproSessionId).thenReturn("15")
       when(mockAppConfig.deskproUserAgent).thenReturn("16")
+      when(mockAppConfig.deskproOrganisationSubmissionId).thenReturn("17")
 
       val result = await(underTest.submitTicket(createTicketRequest))
 

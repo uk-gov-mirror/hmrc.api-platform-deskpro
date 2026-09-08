@@ -64,18 +64,19 @@ class TicketService @Inject() (
   }
 
   private def createDeskproTicketRequest(request: CreateTicketRequest, message: String, uploadedFiles: List[UploadedFile]): CreateDeskproTicket = {
-    val maybeOrganisation  = request.organisation.fold(Map.empty[String, String])(v => Map(config.deskproOrganisation -> v))
-    val maybeApiName       = request.apiName.fold(Map.empty[String, String])(v => Map(config.deskproApiName -> v))
-    val maybeApplicationId = request.applicationId.fold(Map.empty[String, String])(v => Map(config.deskproApplicationId -> v))
-    val maybeSupportReason = request.supportReason.fold(Map.empty[String, String])(v => Map(config.deskproSupportReason -> v))
-    val maybeReasonKey     = request.reasonKey.fold(Map.empty[String, String])(v => Map(config.deskproReasonKey -> v))
-    val maybeService       = request.service.fold(Map.empty[String, String])(v => Map(config.deskproService -> v))
-    val maybeReferrer      = request.referrer.fold(Map.empty[String, String])(v => Map(config.deskproReferrer -> v))
-    val maybeSessionId     = request.sessionId.fold(Map.empty[String, String])(v => Map(config.deskproSessionId -> v))
-    val maybeUserAgent     = request.userAgent.fold(Map.empty[String, String])(v => Map(config.deskproUserAgent -> v))
+    val maybeOrganisation             = request.organisation.fold(Map.empty[String, String])(v => Map(config.deskproOrganisation -> v))
+    val maybeApiName                  = request.apiName.fold(Map.empty[String, String])(v => Map(config.deskproApiName -> v))
+    val maybeApplicationId            = request.applicationId.fold(Map.empty[String, String])(v => Map(config.deskproApplicationId -> v))
+    val maybeSupportReason            = request.supportReason.fold(Map.empty[String, String])(v => Map(config.deskproSupportReason -> v))
+    val maybeReasonKey                = request.reasonKey.fold(Map.empty[String, String])(v => Map(config.deskproReasonKey -> v))
+    val maybeService                  = request.service.fold(Map.empty[String, String])(v => Map(config.deskproService -> v))
+    val maybeReferrer                 = request.referrer.fold(Map.empty[String, String])(v => Map(config.deskproReferrer -> v))
+    val maybeSessionId                = request.sessionId.fold(Map.empty[String, String])(v => Map(config.deskproSessionId -> v))
+    val maybeUserAgent                = request.userAgent.fold(Map.empty[String, String])(v => Map(config.deskproUserAgent -> v))
+    val maybeOrganisationSubmissionId = request.organisationSubmissionId.fold(Map.empty[String, String])(v => Map(config.deskproOrganisationSubmissionId -> v))
 
     val fields =
-      maybeOrganisation ++ maybeApiName ++ maybeApplicationId ++ maybeSupportReason ++ maybeReasonKey ++ maybeService ++ maybeReferrer ++ maybeSessionId ++ maybeUserAgent
+      maybeOrganisation ++ maybeApiName ++ maybeApplicationId ++ maybeSupportReason ++ maybeReasonKey ++ maybeService ++ maybeReferrer ++ maybeSessionId ++ maybeUserAgent ++ maybeOrganisationSubmissionId
     val person = DeskproPerson(request.fullName, request.email)
 
     CreateDeskproTicket(

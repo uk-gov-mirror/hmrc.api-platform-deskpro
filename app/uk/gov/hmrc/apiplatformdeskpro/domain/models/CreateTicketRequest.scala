@@ -33,6 +33,7 @@ case class CreateTicketRequest(
     referrer: Option[String],
     sessionId: Option[String],
     userAgent: Option[String],
+    organisationSubmissionId: Option[String],
     attachments: List[FileAttachment] = List.empty
   )
 
