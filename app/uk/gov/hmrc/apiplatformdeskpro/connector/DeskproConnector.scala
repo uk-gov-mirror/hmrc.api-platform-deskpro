@@ -53,6 +53,8 @@ class DeskproConnector @Inject() (http: HttpClientV2, config: AppConfig, metrics
   val api: API                    = API("deskpro")
 
   def createTicket(deskproTicket: CreateDeskproTicket)(implicit hc: HeaderCarrier): Future[Either[DeskproTicketCreationFailed, DeskproTicketCreated]] = metrics.record(api) {
+    logger.warn(s"Debug attachments - DeskproConnector.createTicket - deskproTicket: $deskproTicket")
+
     http.post(url"${requestUrl("/api/v2/tickets")}")
       .withProxy
       .withBody(Json.toJson(deskproTicket))
