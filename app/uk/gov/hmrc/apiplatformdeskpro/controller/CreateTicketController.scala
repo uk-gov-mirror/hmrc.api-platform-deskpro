@@ -37,7 +37,6 @@ class CreateTicketController @Inject() (ticketService: TicketService, cc: Contro
     auth.authorizedAction(predicate = Predicate.Permission(Resource.from("api-platform-deskpro", "tickets/all"), IAAction("WRITE"))).async {
       implicit request: AuthenticatedRequest[AnyContent, Unit] =>
         withJsonBodyFromAnyContent[CreateTicketRequest] { parsedRequest =>
-          logger.warn(s"Debug attachments - CreateTicketController - attachments: ${parsedRequest.attachments}")
           ticketService.submitTicket(parsedRequest)
             .map {
               case Right(x: DeskproTicketCreated)         => Created(Json.toJson(CreateTicketResponse(Some(x.data.ref))))

@@ -20,23 +20,49 @@
     </div>
 </div>
 
+<div class="container">
+    <div data-type="deskpro-template" id="org_submission_template">
+        <a id="org_submission_link" href="" target="_blank">
+            View Organisation submission
+        </a>
+    </div>
+</div>
+
 <script>
+
     Deskpro.client.onReady(function (context) {
+
         if(context.settings.gk_base_url != null){
             $("#developer_link").attr("href", context.settings.gk_base_url + "/deskpro/ticket/"+context.data.ticket.id+"/developer");
 
-            if(context.data.ticket.customFields[context.settings.custom_field_num] != null ){
-                $("#application_link").attr("href", context.settings.gk_base_url+"/applications/"+context.data.ticket.customFields[context.settings.custom_field_num].value);
+            if(context.data.ticket.customFields[context.settings.app_id_field_num] != null ){
+                $("#application_link").attr("href", context.settings.gk_base_url+"/applications/"+context.data.ticket.customFields[context.settings.app_id_field_num].value);
             }
         }
+
+        if(context.settings.org_gk_base_url != null){
+            if(context.data.ticket.customFields[context.settings.org_sub_id_field_num] != null ){
+                $("#org_submission_link").attr("href", context.settings.org_gk_base_url+"/submission/"+context.data.ticket.customFields[context.settings.org_sub_id_field_num].value);
+            }
+        }
+
     });
 
+
     Deskpro.client.onChange(function (context) {
+
         if(context.settings != null && context.settings.gk_base_url != null){
-            if(context.data.ticket.customFields[context.settings.custom_field_num] != null){
+            if(context.data.ticket.customFields[context.settings.app_id_field_num] != null){
                 Deskpro.utils.renderTemplate("application_template", context);
             }
             Deskpro.utils.renderTemplate("developer_template", context);
         }
+
+        if(context.settings != null && context.settings.org_gk_base_url != null){
+            if(context.data.ticket.customFields[context.settings.org_sub_id_field_num] != null){
+                Deskpro.utils.renderTemplate("org_submission_template", context);
+            }
+        }
     });
+
 </script>

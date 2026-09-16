@@ -64,8 +64,6 @@ class TicketService @Inject() (
   }
 
   private def createDeskproTicketRequest(request: CreateTicketRequest, message: String, uploadedFiles: List[UploadedFile]): CreateDeskproTicket = {
-    logger.warn(s"Debug attachments - TicketService.createDeskproTicketRequest - uploadedFiles: $uploadedFiles")
-
     val maybeOrganisation             = request.organisation.fold(Map.empty[String, String])(v => Map(config.deskproOrganisation -> v))
     val maybeApiName                  = request.apiName.fold(Map.empty[String, String])(v => Map(config.deskproApiName -> v))
     val maybeApplicationId            = request.applicationId.fold(Map.empty[String, String])(v => Map(config.deskproApplicationId -> v))
